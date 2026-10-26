@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     JWT_ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 11520
     GEMINI_API_KEY: str = ""
-    DEMO_MODE: bool = True
+    DEMO_MODE: bool = False
     PORT: int = 8000
     HOST: str = "127.0.0.1"
 

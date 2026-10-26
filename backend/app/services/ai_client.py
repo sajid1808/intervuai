@@ -23,8 +23,8 @@ def _get_client():
 
 # Ordered by availability and responsiveness
 CASCADE_MODELS = [
-    "gemini-3.5-flash-lite",
     "gemini-3.5-flash",
+    "gemini-3.5-flash-lite",
     "gemini-flash-latest",
     "gemini-3.8-flash"
 ]
