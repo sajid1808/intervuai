@@ -25,6 +25,10 @@ test.db
 check_syntax.py
 parse_roles.py
 
+# Uploaded files
+backend/uploads/*
+!backend/uploads/.gitkeep
+
 # OS metadata
 .DS_Store
 Thumbs.db
