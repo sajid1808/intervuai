@@ -21,6 +21,9 @@ class Settings(BaseSettings):
         url = self.DATABASE_URL
         if url.startswith("postgres://"):
             url = url.replace("postgres://", "postgresql://", 1)
+        # On Vercel / serverless, local directory is read-only. Fallback to /tmp for sqlite
+        if os.getenv("VERCEL") and url.startswith("sqlite:///."):
+            url = "sqlite:////tmp/interview_prep.db"
         return url
 
 settings = Settings()

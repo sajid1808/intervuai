@@ -7,18 +7,16 @@ from app.routers import auth, resume, interview, dashboard
 
 # Initialize Database tables automatically on startup
 try:
-    # This creates the database schema if it doesn't already exist
-    # (very handy for SQLite and initial Postgres setup)
-    Base.metadata.create_all(bind=engine)
-    
-    # Seed default taxonomy roles and skills
-    from app.database import SessionLocal
-    from app.services.db_seeder import seed_database_taxonomy
-    db_session = SessionLocal()
-    try:
-        seed_database_taxonomy(db_session)
-    finally:
-        db_session.close()
+    # Only run table creation / seeding on SQLite; on PostgreSQL (Neon) tables are pre-seeded
+    if not settings.clean_database_url.startswith("postgresql"):
+        Base.metadata.create_all(bind=engine)
+        from app.database import SessionLocal
+        from app.services.db_seeder import seed_database_taxonomy
+        db_session = SessionLocal()
+        try:
+            seed_database_taxonomy(db_session)
+        finally:
+            db_session.close()
 except Exception as e:
     print(f"Error initializing or seeding database: {e}")
 
