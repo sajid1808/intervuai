@@ -15,9 +15,12 @@ from app.services.ai_client import analyze_job_description_with_llm
 
 router = APIRouter(prefix="/resumes", tags=["Resumes & ATS"])
 
-# Ensure uploads directory exists
-UPLOAD_DIR = "./uploads"
-os.makedirs(UPLOAD_DIR, exist_ok=True)
+# Ensure uploads directory exists (use /tmp on serverless environments like Vercel)
+UPLOAD_DIR = "/tmp/uploads" if (os.getenv("VERCEL") or os.getenv("AWS_LAMBDA_FUNCTION_NAME")) else "./uploads"
+try:
+    os.makedirs(UPLOAD_DIR, exist_ok=True)
+except Exception:
+    pass
 
 MAX_FILE_SIZE = 10 * 1024 * 1024 # 10 MB limit
 

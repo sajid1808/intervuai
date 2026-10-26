@@ -49,23 +49,28 @@ app.include_router(resume.router, prefix="/api/v1")
 app.include_router(interview.router, prefix="/api/v1")
 app.include_router(dashboard.router, prefix="/api/v1")
 
-from fastapi.responses import FileResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 import os
 
-@app.get("/")
+@app.get("/", response_class=HTMLResponse)
 def read_root():
-    frontend_path = os.path.join(
-        os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))),
-        "frontend",
-        "index.html"
+    candidates = [
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), "frontend", "index.html"),
+        os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "frontend", "index.html"),
+        os.path.join(os.getcwd(), "frontend", "index.html"),
+        os.path.join(os.getcwd(), "backend", "app", "frontend", "index.html"),
+    ]
+    for path in candidates:
+        if os.path.exists(path):
+            try:
+                with open(path, "r", encoding="utf-8") as f:
+                    return HTMLResponse(content=f.read(), status_code=200)
+            except Exception as e:
+                print(f"Error reading {path}: {e}")
+    return HTMLResponse(
+        content="<h1>IntervuAI API is running</h1><p>Frontend file not found at expected paths.</p>",
+        status_code=200
     )
-    if os.path.exists(frontend_path):
-        return FileResponse(frontend_path)
-    return {
-        "message": "AI-Powered Interview Prep API is running",
-        "demo_mode": settings.DEMO_MODE,
-        "database_connected": True
-    }
 
 if __name__ == "__main__":
     uvicorn.run("app.main:app", host=settings.HOST, port=settings.PORT, reload=True)
