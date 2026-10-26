@@ -13,10 +13,9 @@ from app.config import settings
 from app.database import engine, Base
 from app.routers import auth, resume, interview, dashboard
 
-# Initialize Database tables automatically on startup
+# Initialize Database tables automatically on startup (only for local development)
 try:
-    # Only run table creation / seeding on SQLite; on PostgreSQL (Neon) tables are pre-seeded
-    if not settings.clean_database_url.startswith("postgresql"):
+    if not os.getenv("VERCEL") and not settings.clean_database_url.startswith("postgresql"):
         Base.metadata.create_all(bind=engine)
         from app.database import SessionLocal
         from app.services.db_seeder import seed_database_taxonomy
